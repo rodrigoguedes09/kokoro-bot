@@ -1,67 +1,55 @@
-# 🎧 Kokoro Bot — The Vibe Architect
+# Kokoro Bot
 
-> Audio intelligence that reveals the **magic** hidden in conversations.
+Audio intelligence that transforms conversations into actionable insights.
 
-Kokoro listens to audio from the real world and delivers insights you didn't know you needed — hidden sentiments, unspoken tensions, overlooked topics, and pending action items.
+Kokoro analyzes real-world audio to uncover hidden patterns: sentiment shifts, controversial topics, consensus levels, and action items that emerge during discussions. Built on Deepgram's Audio Intelligence API, it processes speech-to-text, sentiment analysis, intent recognition, and topic detection in a single pipeline.
 
-Built with [Deepgram Audio Intelligence](https://developers.deepgram.com/docs/audio-intelligence) (Speech-to-Text, Sentiment Analysis, Intent Recognition, Topic Detection & Summarization).
+## Features
 
----
+**Sentiment Timeline** — Track how emotional tone evolves throughout the conversation with visual charts
 
-## ✨ What It Does
+**Vibe Shifts** — Identify exact moments where mood changed significantly (threshold-based detection)
 
-| Feature | What Kokoro Reveals |
-|---------|---------------------|
-| **📊 Sentiment Timeline** | How the "vibe" evolved throughout the conversation |
-| **⚡ Vibe Shifts** | Exact moments where the mood changed drastically |
-| **🔥 Hot Topics** | Subjects that triggered negative or controversial reactions |
-| **🤝 Consensus Index** | Whether people were agreeing or clashing |
-| **✅ Action Items** | Commitments and next steps mentioned during the talk |
-| **📝 TL;DR Summary** | AI-generated summary of the entire conversation |
+**Hot Topics** — Flag subjects that triggered negative reactions or controversy
 
----
+**Consensus Index** — Measure agreement levels based on affirmation patterns
 
-## 🚀 Quick Start
+**Action Items** — Extract commitments, decisions, and next steps from dialogue
+
+**AI Summary** — Get a concise overview of the entire conversation
+
+## Quick Start
 
 ### 1. Prerequisites
 
 - Python 3.11+
-- A [Deepgram API key](https://console.deepgram.com/) (free tier available)
+**Prerequisites:** Python 3.11+ and a Deepgram API key (free tier available at console.deepgram.com)
 
-### 2. Install
-
-```bash
-git clone https://github.com/rodrigoguedes09/kokoro-bot.git
+**Installation:**s://github.com/rodrigoguedes09/kokoro-bot.git
 cd kokoro-bot
 pip install -e .
 ```
 
 ### 3. Configure
-
-```bash
 cp .env.example .env
-# Edit .env and add your DEEPGRAM_API_KEY
 ```
 
-### 4. Analyze Audio
+Edit `.env` and add your `DEEPGRAM_API_KEY`.
+
+**Basic Usage:**
 
 ```bash
-# From a local file
+# Analyze local file
 python -m kokoro analyze --file meeting.wav
 
-# From a URL
+# Analyze remote URL
 python -m kokoro analyze --url https://dpgr.am/spacewalk.wav
 
-# Save report + chart to disk
+# Save report and chart to disk
 python -m kokoro analyze --file meeting.wav --save
 ```
 
----
-
-## 📖 Usage
-
-### CLI Mode
-
+##
 ```
 🎧 Kokoro Bot — The Vibe Architect
 
@@ -69,49 +57,38 @@ positional arguments:
   {analyze,discord}
     analyze           Analyze an audio file or URL
     discord           Start the Discord bot
+ommand Line
 
-options:
-  -v, --verbose       Enable debug logging
+```bash
+python -m kokoro analyze [--file FILE | --url URL] [--output DIR] [--save]
 ```
 
-**Analyze subcommand:**
+Options:
+- `--file, -f` — Path to local audio file (wav, mp3, flac, etc.)
+- `--url, -u` — Public URL of audio file
+- `--output, -o` — Output directory for reports (default: ./output)
+- `--save, -s` — Save JSON report and sentiment chart to disk
+- `--verbose, -v` — Enable debug logging
 
-```
-python -m kokoro analyze [-f FILE | -u URL] [-o OUTPUT_DIR] [-s]
-```
-
-| Flag | Description |
-|------|-------------|
-| `-f, --file` | Path to a local audio file (wav, mp3, etc.) |
-| `-u, --url` | Public URL of an audio file |
-| `-o, --output` | Output directory (default: `./output`) |
-| `-s, --save` | Save JSON report and sentiment chart to disk |
-
-### Discord Bot Mode
+### Discord Bot
 
 ```bash
 python -m kokoro discord
 ```
 
-**Slash commands:**
+Configure `DISCORD_BOT_TOKEN` and `DISCORD_REPORT_CHANNEL_ID` in `.env` before running.
 
-| Command | Description |
-|---------|-------------|
-| `/vibe-url <url>` | Analyze audio from a URL |
-| `/vibe-file <attachment>` | Upload an audio file for analysis |
+**Available Commands:**
 
----
+`/vibe-url <url>` — Analyze audio from a public URL
 
-## 🏗️ Architecture
+`/vibe-file <attachment>` — Upload and analyze an audio file
 
-```
-Audio Source ──▶ Deepgram API ──▶ Analytics Engine ──▶ Report Generator
-                 (STT + AI)       (Insights)           (Text + Chart)
-```
+`/join` — Join your current voice channel and start recording
 
-### Project Structure
+`/leave` — Stop recording, analyze the conversation, and post a Vibe Report
 
-```
+##
 src/kokoro/
 ├── __main__.py          # CLI entry point
 ├── config.py            # Settings & environment variables
@@ -121,35 +98,22 @@ src/kokoro/
 ├── report.py            # Report generator (text, chart, JSON, Discord embed)
 ├── discord_bot.py       # Discord bot with slash commands
 └── utils.py             # Helper functions
-```
+The application follows a simple pipeline:
 
-### Pipeline
+1. **Audio Input** — Local file, URL, or Discord voice channel recording
+2. **Deepgram Processing** — Speech-to-text with sentiment, topics, intents, and summarization
+3. **Analytics Engine** — Detection algorithms for vibe shifts, hot topics, consensus calculation, and action item extraction
+4. **Report Generation** — Terminal output, sentiment timeline chart (PNG), JSON export, or Discord embed
 
-1. **Input** → Audio file or URL
-2. **Deepgram API** → Transcription + Sentiment + Topics + Intents + Summary
-3. **Analytics Engine** → Vibe shifts, hot topics, consensus, action items
-4. **Report Generator** → Terminal output, PNG chart, JSON export, Discord embed
+**Core Components:**
 
----
+- `deepgram_client.py` — Async wrapper for Deepgram SDK v5
+- `analyzer.py` — Insight detection algorithms (vibe shifts use sentiment deltas above 0.4, hot topics cross-reference negative sentiment with detected topics)
+- `report.py` — Multi-format output generation
+- `voice_recorder.py` — Discord voice channel audio capture using discord-ext-voice-recv
+- `discord_bot.py` — Bot with slash commands and voice recording capabilities
 
-## ⚙️ Configuration
-
-All settings are loaded from environment variables (`.env` file):
-
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `DEEPGRAM_API_KEY` | ✅ | — | Your Deepgram API key |
-| `DISCORD_BOT_TOKEN` | Discord mode | — | Discord bot token |
-| `DISCORD_REPORT_CHANNEL_ID` | Discord mode | — | Channel for reports |
-| `VIBE_SHIFT_THRESHOLD` | No | `0.4` | Min sentiment delta to flag a vibe shift |
-| `NEGATIVE_SENTIMENT_THRESHOLD` | No | `-0.3` | Threshold for "hot" topics |
-
----
-
-## 🧪 Tests
-
-```bash
-pip install -e ".[dev]"
+##nstall -e ".[dev]"
 pytest
 ```
 
@@ -164,5 +128,44 @@ pytest
 ---
 
 ## 📄 License
+Environment variables (`.env` file):
 
-MIT
+**Required:**
+- `DEEPGRAM_API_KEY` — Your Deepgram API key
+
+**Discord Mode:**
+- `DISCORD_BOT_TOKEN` — Bot token from Discord Developer Portal
+- `DISCORD_REPORT_CHANNEL_ID` — Channel ID where reports will be posted
+
+**Optional:**
+- `VIBE_SHIFT_THRESHOLD` — Minimum sentiment delta to flag a vibe shift (default: 0.4)
+- `NEGATIVE_SENTIMENT_THRESHOLD` — Sentiment threshold for hot topic detection (default: -0.3)
+
+## Development
+
+Run tests:
+```bash
+pip install -e ".[dev]"
+pytest
+```
+
+The test suite includes 8 unit tests covering vibe shift detection, hot topic identification, consensus calculation, and action item extraction.
+
+## Technical Details
+
+**Audio Intelligence Features:** Deepgram API v5 with sentiment analysis, intent recognition, topic detection, speaker diarization, and v2 summarization
+
+**Voice Recording:** 48kHz stereo 16-bit PCM capture from Discord voice channels, written to WAV format
+
+**Sentiment Analysis:** Segment-level sentiment scores with timeline visualization using matplotlib
+
+**Thresholds:** Vibe shifts detected when sentiment delta exceeds 0.4 between segments; topics flagged as "hot" when associated with sentiment below -0.3
+
+## Limitations
+
+- Audio Intelligence features currently support English audio only
+- Maximum input length: 150,000 tokens per request
+- Sentiment analysis operates on transcribed segments, not real-time streaming
+- Voice recording requires PyNaCl and discord-ext-voice-recv extension
+
+##
