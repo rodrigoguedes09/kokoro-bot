@@ -89,15 +89,7 @@ Configure `DISCORD_BOT_TOKEN` and `DISCORD_REPORT_CHANNEL_ID` in `.env` before r
 `/leave` — Stop recording, analyze the conversation, and post a Vibe Report
 
 ##
-src/kokoro/
-├── __main__.py          # CLI entry point
-├── config.py            # Settings & environment variables
-├── models.py            # Typed data models (dataclasses)
-├── deepgram_client.py   # Deepgram API wrapper
-├── analyzer.py          # Analytics engine (the "magic")
-├── report.py            # Report generator (text, chart, JSON, Discord embed)
-├── discord_bot.py       # Discord bot with slash commands
-└── utils.py             # Helper functions
+
 The application follows a simple pipeline:
 
 1. **Audio Input** — Local file, URL, or Discord voice channel recording
