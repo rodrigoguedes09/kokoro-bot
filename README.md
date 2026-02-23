@@ -1,3 +1,5 @@
+<img width="1024" height="1024" alt="kokoro-banner" src="https://github.com/user-attachments/assets/203d5465-af45-4760-8fb2-d34586491472" />
+
 # Kokoro Bot
 
 Audio intelligence that transforms conversations into actionable insights.
