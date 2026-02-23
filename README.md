@@ -20,6 +20,8 @@ Kokoro analyzes real-world audio to uncover hidden patterns: sentiment shifts, c
 
 **AI Summary** — Get a concise overview of the entire conversation
 
+https://vimeo.com/1166335291?share=copy&fl=sv&fe=ci
+
 ## Quick Start
 
 ### 1. Prerequisites
